@@ -5,13 +5,21 @@ import groovy.transform.MapConstructor
 import io.micronaut.data.annotation.DateCreated
 import io.micronaut.data.annotation.DateUpdated
 
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToMany
-import javax.persistence.Table
+import javax.persistence.*
 
+@SqlResultSetMapping(
+        name = "PersonMapping",
+        classes = @ConstructorResult (
+                targetClass = Person.class,
+                columns = [
+                        @ColumnResult(name = "id", type = Long.class),
+                        @ColumnResult(name = "firstName"),
+                        @ColumnResult(name = "lastName"),
+                        @ColumnResult(name = "dateCreated"),
+                        @ColumnResult(name = "lastUpdated"),
+                ]
+        )
+)
 @Entity
 @CompileStatic
 @Table(name = "person")

@@ -37,4 +37,18 @@ class PersonController {
                 personRepository.findDistinct()
         )
     }
+
+    @Get(uri="/nativeQuery", produces= MediaType.APPLICATION_JSON)
+    HttpResponse nativeQuery() {
+        return HttpResponse.ok(
+                personRepository.nativeQuery()
+        )
+    }
+
+    @Get(uri="/nativeQueryMapped", produces= MediaType.APPLICATION_JSON)
+    HttpResponse nativeQueryMapped() {
+        return HttpResponse.ok(
+                personRepository.nativeQueryMapped()
+        )
+    }
 }
