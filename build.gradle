@@ -1,0 +1,69 @@
+plugins {
+    id "groovy"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "application"
+}
+
+version "0.1"
+group "codes.recursive"
+
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly
+}
+
+dependencies {
+    compileOnly(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    compileOnly("io.micronaut:micronaut-inject-groovy")
+    compileOnly("io.micronaut.data:micronaut-data-processor")
+    implementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
+    implementation("io.micronaut:micronaut-inject")
+    implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-runtime-groovy")
+    implementation("javax.annotation:javax.annotation-api")
+    implementation("io.micronaut:micronaut-http-server-netty")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.configuration:micronaut-jdbc-tomcat")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
+    implementation("io.micronaut.configuration:micronaut-hibernate-jpa")
+
+    compileOnly("io.micronaut.data:micronaut-data-processor:1.0.2")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.3")
+    runtimeOnly("com.h2database:h2")
+    testImplementation enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion")
+    testImplementation("io.micronaut:micronaut-inject-groovy")
+    testImplementation("org.spockframework:spock-core") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+}
+
+test.classpath += configurations.developmentOnly
+
+mainClassName = "codes.recursive.Application"
+
+java {
+    sourceCompatibility = JavaVersion.toVersion('11')
+    targetCompatibility = JavaVersion.toVersion('11')
+}
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+tasks.withType(JavaExec) {
+    classpath += configurations.developmentOnly
+    jvmArgs('-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+}
+
+
+
