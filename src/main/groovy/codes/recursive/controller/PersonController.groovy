@@ -44,11 +44,4 @@ class PersonController {
                 personRepository.nativeQuery()
         )
     }
-
-    @Get(uri="/nativeQueryMapped", produces= MediaType.APPLICATION_JSON)
-    HttpResponse nativeQueryMapped() {
-        return HttpResponse.ok(
-                personRepository.nativeQueryMapped()
-        )
-    }
 }

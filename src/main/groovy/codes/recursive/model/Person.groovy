@@ -7,19 +7,6 @@ import io.micronaut.data.annotation.DateUpdated
 
 import javax.persistence.*
 
-@SqlResultSetMapping(
-        name = "PersonMapping",
-        classes = @ConstructorResult (
-                targetClass = Person.class,
-                columns = [
-                        @ColumnResult(name = "id", type = Long.class),
-                        @ColumnResult(name = "firstName"),
-                        @ColumnResult(name = "lastName"),
-                        @ColumnResult(name = "dateCreated"),
-                        @ColumnResult(name = "lastUpdated"),
-                ]
-        )
-)
 @Entity
 @CompileStatic
 @Table(name = "person")

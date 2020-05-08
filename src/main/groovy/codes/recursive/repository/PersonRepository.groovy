@@ -6,14 +6,9 @@ import groovy.transform.CompileStatic
 import io.micronaut.data.annotation.Join
 import io.micronaut.data.annotation.Query
 import io.micronaut.data.annotation.Repository
-import io.micronaut.data.jpa.annotation.EntityGraph
 import io.micronaut.data.repository.CrudRepository
-import org.hibernate.criterion.Distinct
 
-import javax.persistence.ColumnResult
-import javax.persistence.ConstructorResult
 import javax.persistence.EntityManager
-import javax.persistence.SqlResultSetMapping
 import javax.transaction.Transactional
 
 @CompileStatic
@@ -39,16 +34,7 @@ abstract class PersonRepository implements CrudRepository<Person, Long> {
     @Transactional
     List<Map> nativeQuery() {
         javax.persistence.Query nativeQuery = entityManager.createNativeQuery("""
-            select first_name, last_name
-            from person
-        """)
-        return nativeQuery.getResultList()
-    }
-
-    @Transactional
-    List<Person> nativeQueryMapped() {
-        javax.persistence.Query nativeQuery = entityManager.createNativeQuery("""
-            select id, first_name, last_name, date_created, last_updated
+            select first_name, last_name, date_created, last_updated
             from person
         """)
         return nativeQuery.getResultList()
