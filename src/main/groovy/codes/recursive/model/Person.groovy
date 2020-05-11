@@ -5,7 +5,11 @@ import groovy.transform.MapConstructor
 import io.micronaut.data.annotation.DateCreated
 import io.micronaut.data.annotation.DateUpdated
 
+import javax.annotation.Nullable
 import javax.persistence.*
+import javax.validation.constraints.Max
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 @Entity
 @CompileStatic
@@ -15,8 +19,14 @@ class Person {
     @Id
     @GeneratedValue
     Long id
+    @NotNull
+    @Size(min = 3, max = 10)
     String firstName
+    @NotNull
     String lastName
+    @Nullable
+    @Max(125L)
+    int age
     @DateCreated
     Date dateCreated
     @DateUpdated

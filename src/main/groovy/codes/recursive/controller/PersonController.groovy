@@ -1,11 +1,16 @@
 package codes.recursive.controller
 
+import codes.recursive.model.Person
 import codes.recursive.repository.PersonRepository
 import groovy.transform.CompileStatic
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+
+import javax.validation.Valid
 
 @CompileStatic
 @Controller("/person")
@@ -42,6 +47,14 @@ class PersonController {
     HttpResponse nativeQuery() {
         return HttpResponse.ok(
                 personRepository.nativeQuery()
+        )
+    }
+
+    @Post("/savePerson")
+    HttpResponse savePerson(@Body @Valid Person person) {
+        personRepository.save(person)
+        return HttpResponse.created(
+                person
         )
     }
 }
