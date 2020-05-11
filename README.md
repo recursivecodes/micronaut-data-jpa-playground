@@ -59,3 +59,17 @@ Then the following structure is returned:
 ```
 
 *Note*: if you don't like the fact that there is a different format returned for only a single error, talk to the people who wrote the spec. :-/
+
+To save a valid user:
+
+```bash
+$curl -X POST -H "Content-Type: application/json" -d '{"firstName": "Todd", "lastName": "Sharp", "age": 43}' http://localhost:8080/person/savePerson                       | jq
+{
+  "id": 7,
+  "firstName": "Todd",
+  "lastName": "Sharp",
+  "age": 43,
+  "dateCreated": 1589222560917,
+  "lastUpdated": 1589222560917
+}
+```
