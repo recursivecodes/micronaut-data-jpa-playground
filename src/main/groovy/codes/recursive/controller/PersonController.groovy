@@ -3,13 +3,17 @@ package codes.recursive.controller
 import codes.recursive.model.Person
 import codes.recursive.repository.PersonRepository
 import groovy.transform.CompileStatic
+import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Error
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
 
+import javax.validation.ConstraintViolation
+import javax.validation.ConstraintViolationException
 import javax.validation.Valid
 
 @CompileStatic
@@ -56,5 +60,18 @@ class PersonController {
         return HttpResponse.created(
                 person
         )
+    }
+
+    @Error(exception = ConstraintViolationException.class)
+    Map<String, Object> onValidationException(HttpRequest request, ConstraintViolationException ex) {
+        return [
+                errors: ex.constraintViolations.collect { ConstraintViolation it ->
+                    [
+                            message: it.message,
+                            path: it.propertyPath,
+                    ]
+                },
+                body: request?.getBody(),
+        ]
     }
 }
