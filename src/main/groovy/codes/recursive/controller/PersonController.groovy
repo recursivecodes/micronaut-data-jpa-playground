@@ -54,6 +54,13 @@ class PersonController {
         )
     }
 
+    @Get(uri="/nativeQuery2", produces= MediaType.APPLICATION_JSON)
+    HttpResponse nativeQuery2() {
+        return HttpResponse.ok(
+                personRepository.nativeQuery2()
+        )
+    }
+
     @Post("/savePerson")
     HttpResponse savePerson(@Body @Valid Person person) {
         personRepository.save(person)

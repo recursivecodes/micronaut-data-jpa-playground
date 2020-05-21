@@ -2,6 +2,7 @@ package codes.recursive.repository
 
 import codes.recursive.model.Person
 import codes.recursive.model.PersonHobby
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.transform.CompileStatic
 import io.micronaut.data.annotation.Join
 import io.micronaut.data.annotation.Query
@@ -9,6 +10,7 @@ import io.micronaut.data.annotation.Repository
 import io.micronaut.data.repository.CrudRepository
 import org.hibernate.Criteria
 import org.hibernate.Session
+import org.hibernate.transform.AliasToEntityMapResultTransformer
 
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
@@ -57,6 +59,13 @@ abstract class PersonRepository implements CrudRepository<Person, Long> {
             .addEntity("p", Person.class) // yeah, weird that you have to have this twice, and i can't remember where i read that this was necessary, but it doesn't work right without it
             .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
         return nativeQuery.getResultList()
+    }
+
+    @Transactional
+    List nativeQuery2() {
+        return getSession().createSQLQuery("select first_name, last_name from person")
+        .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
+        .list()
     }
 
 }
