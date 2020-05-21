@@ -7,6 +7,8 @@ import io.micronaut.data.annotation.Join
 import io.micronaut.data.annotation.Query
 import io.micronaut.data.annotation.Repository
 import io.micronaut.data.repository.CrudRepository
+import org.hibernate.Criteria
+import org.hibernate.Session
 
 import javax.persistence.EntityManager
 import javax.transaction.Transactional
@@ -21,6 +23,11 @@ abstract class PersonRepository implements CrudRepository<Person, Long> {
         this.entityManager = entityManager
     }
 
+    Session getSession() {
+        Session session = entityManager.unwrap(Session.class)
+        return session
+    }
+
     abstract PersonHobby savePersonHobby(PersonHobby personHobby)
 
     abstract List<Person> findByLastName(String lastName)
@@ -32,11 +39,23 @@ abstract class PersonRepository implements CrudRepository<Person, Long> {
     abstract List<Person> listPersons()
 
     @Transactional
-    List<Map> nativeQuery() {
-        javax.persistence.Query nativeQuery = entityManager.createNativeQuery("""
-            select first_name, last_name, date_created, last_updated
-            from person
+    List<Person> nativeQuery() {
+        javax.persistence.Query nativeQuery = getSession().createSQLQuery("""
+            select 
+                {p.*}, 
+                {ph.*}, 
+                {h.*}
+            from person p 
+                left join person_hobby ph
+                    on p.id = ph.person_id
+                left join hobby h
+                    on h.id = ph.hobby_id
         """)
+            .addEntity("p", Person.class)
+            .addJoin("ph", "p.personHobbies")
+            .addJoin("h", "ph.hobby")
+            .addEntity("p", Person.class) // yeah, weird that you have to have this twice, and i can't remember where i read that this was necessary, but it doesn't work right without it
+            .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
         return nativeQuery.getResultList()
     }
 
