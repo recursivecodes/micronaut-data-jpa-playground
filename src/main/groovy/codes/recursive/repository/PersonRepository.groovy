@@ -63,7 +63,7 @@ abstract class PersonRepository implements CrudRepository<Person, Long> {
 
     @Transactional
     List nativeQuery2() {
-        return getSession().createSQLQuery("select first_name, last_name from person")
+        return getSession().createSQLQuery('select first_name as "first_name", last_name as "last_name" from person')
         .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
         .list()
     }
